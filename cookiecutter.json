@@ -1,0 +1,17 @@
+{
+  "project_name": null,
+  "module_name": null,
+  "project_slug": "{{ cookiecutter.module_name }}",
+  "pypi_project_name":  "{{ cookiecutter.module_name }}",
+  "author": null,
+  "email": null,
+  "python_version": "3.10",
+  "license": [ "MIT", "TBD" ],
+  "add_ml_deps": true,
+  "init_repo": true,
+  "_copy_without_render": [
+        "Makefile",
+        "pylintrc"
+    ],
+  "_new_lines": "\n"
+}

@@ -1,0 +1,64 @@
+[[linter]]
+code = "RUFF_FORMAT"
+include_patterns = [
+  "{{ cookiecutter.module_name }}/**/*.py",
+  "tests/**/*.py",
+]
+exclude_patterns = []
+command = [
+  "python3",
+  "-m",
+  "lintrunner_adapters",
+  "run",
+  "ruff_format_linter",
+  "--config",
+  "pyproject.toml",
+  "--",
+  {% raw -%}
+  "@{{PATHSFILE}}",
+  {% endraw -%}
+]
+is_formatter = true
+
+[[linter]]
+code = "RUFF_LINT"
+include_patterns = [
+  "{{ cookiecutter.module_name }}/**/*.py",
+  "tests/**/*.py",
+]
+exclude_patterns = []
+command = [
+  "python3",
+  "-m",
+  "lintrunner_adapters",
+  "run",
+  "ruff_lint",
+  "--config",
+  "pyproject.toml",
+  "--",
+  {% raw -%}
+  "@{{PATHSFILE}}",
+  {% endraw -%}
+]
+is_formatter = true
+
+[[linter]]
+code = "PYLINT"
+include_patterns = [
+  "{{ cookiecutter.module_name }}/**/*.py",
+  "tests/**/*.py",
+]
+exclude_patterns = []
+command = [
+  "python3",
+  "-m",
+  "lintrunner_adapters",
+  "run",
+  "pylint_linter",
+  "--rcfile",
+  ".pylintrc",
+  "--",
+  {% raw -%}
+  "@{{PATHSFILE}}",
+  {% endraw -%}
+]
