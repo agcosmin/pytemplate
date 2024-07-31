@@ -8,12 +8,13 @@ import sys
 
 def remove_files() -> None:
     """Remove optional files."""
-    files = ["{% if cookiecutter.license != 'TBD' %}LICENSE{% endif %}"]
+    files = ["{%- if cookiecutter.license == 'TBD' %}LICENSE{% endif -%}"]
     for file in files:
-        if os.path.isfile(file):
-            os.remove(file)
-        else:
-            print(f"WARN: Could not find file {file} to remove.")
+        if file != "":
+            if os.path.isfile(file):
+                os.remove(file)
+            else:
+                print(f"WARN: Could not find file {file} to remove.")
 
 
 def hide_config_files() -> None:
