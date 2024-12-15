@@ -15,7 +15,7 @@ cookiecutter pytemplate
 pytemplate is basic python project template that configures the following:
 
 * `pyproject.toml`:
-    * build backend is set to [`flit`](https://flit.pypa.io/en/stable/index.html)
+    * build backend is set to [`setuptools`](https://setuptools.pypa.io/en/latest/index.html)
 
 * Lint and format:
 

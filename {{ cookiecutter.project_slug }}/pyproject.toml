@@ -1,43 +1,56 @@
 [build-system]
-requires = ["flit_core >=3.9,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools >= 75.6"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "{{ cookiecutter.pypi_project_name }}"
 authors = [
   { name = "{{ cookiecutter.author }}", email="{{ cookiecutter.email }}" },
 ]
+description = "{{ cookiecutter.description }}"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">={{ cookiecutter.python_version }}"
 classifiers = [
   "Programming Language :: Python :: 3",
   {% if cookiecutter.license == "MIT" -%}
   "License :: OSI Approved :: MIT License",
-  {% endif %}
+  {% endif -%}
   "Operating System :: OS Independent",
 ]
-dynamic = ["version", "description"]
+dynamic = ["version"]
 dependencies = [
 {% if cookiecutter.add_ml_deps -%}
-"torch >= 2.3.0",
-"torchaudio >= 2.3.0",
-"torchvision >= 0.18.0",
+"torch >= 2.5.0",
+"torchaudio >= 2.5.0",
+"torchvision >= 0.20.0",
 "torchrl >= 0.4.0",
 "pandas >= 2.2.0",
-"scikit-learn >= 1.4.2",
+"scikit-learn >= 1.6.0",
+"scipy >= 1.14.1",
 "notebook >= 7.1.3",
 "lightning >= 2.2.4",
 "transformers >=  4.41.2",
 "accelerate >= 0.31.0",
 "bitsandbytes >= 0.41.0",
 "tokenizers >= 0.19.1",
+"datasets >= 2.21.0",
+"tqdm >= 4.66.5",
+"tensorboard >= 2.17.1",
+"seaborn [stats] >= 0.13.2",
+"ydf >= 0.8.0",
+"jupyterlab-vim >= 4.1.4",
+"optuna >= 4.1.0",
 {% endif -%}
 ]
 
 [project.urls]
 
-[tool.flit.module]
-name = "{{ cookiecutter.module_name }}"
+[tool.setuptools.dynamic]
+version = {attr = "{{ cookiecutter.package_name }}.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [ "{{ cookiecutter.package_name }}"]
 
 [project.scripts]
 
