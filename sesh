@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# Inspired by: https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer
+search_paths="${TMUX_SESSIONIZER_PATH:-$HOME}"
+
+conda_env=""
+uv_env=""
+search_path=""
+
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") [options] [search_path]
+
+Options:
+  -c, --conda-env NAME    Conda environment to activate. If missing, searches
+                          for name in .conda.env file in folder root.
+  -u, --uv-env NAME       UV environment to activate. If missing, searches
+                          for .venv directory in folder root.
+  -h, --help              Display this help message and exit.
+
+EOF
+    exit 1
+} >&2
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -c | --conda-env)
+        conda_env="$2"
+        shift 2
+        ;;
+    -u | --uv-env)
+        uv_env=$(realpath "$2")
+        shift 2
+        ;;
+    -h | --help)
+        usage
+        ;;
+    -*)
+        echo "Unknown option: $1"
+        usage
+        ;;
+    *)
+        search_path=$(realpath "$1")
+        shift
+        ;;
+    esac
+done
+
+search_paths=$(echo "${search_path:-$search_paths}" | tr ':' ' ')
+
+selected_root=$(
+    find "${search_paths}" \
+        -mindepth 1 \
+        -maxdepth 1 \
+        -type d | fzf
+)
+
+if [[ -z "${selected_root}" ]]; then
+    exit 0
+fi
+
+selected_name=$(basename "${selected_root}" | tr . _)
+tmux_running=$(pgrep tmux)
+
+if [[ -z "${tmux_running}" ]] ||
+    ! tmux has-session -t="${selected_name}" 2>/dev/null; then
+    if [[ -z "${conda_env}" ]]; then
+        conda_env_file="${selected_root}/.conda.env"
+        if [[ -f "${conda_env_file}" ]]; then
+            read -r conda_env _ <"${conda_env_file}"
+        fi
+    fi
+    activate_conda_cmd=""
+    if [[ -n "${conda_env}" ]]; then
+        activate_conda_cmd="conda activate ${conda_env}"
+    fi
+
+    if [[ -n "${uv_env}" && ! -d "${uv_env}" && ! -f "${uv_env}/bin/active" ]]; then
+        echo "'uv' env missing activate. Could not find: ${uv_env}/bin/active"
+        exit 1
+    fi
+
+    uv_env="${uv_env:-$selected_root/.venv}"
+    activate_uv_env=""
+    if [[ -d "${uv_env}" && ! -f "${uv_env}/bin/active" ]]; then
+        activate_uv_env="source ${uv_env}/bin/activate"
+    fi
+
+    nvim_session_file="nvim.session"
+    nvim_cmd="nvim"
+    if [[ -f "${selected_root}/${nvim_session_file}" ]]; then
+        nvim_cmd="nvim -S ${nvim_session_file}"
+    fi
+
+    start_session_cmds=()
+    [[ -n "${activate_conda_cmd}" ]] && start_session_cmds+=("${activate_conda_cmd}")
+    [[ -n "${activate_uv_env}" ]] && start_session_cmds+=("${activate_uv_env}")
+    [[ -n "${nvim_cmd}" ]] && start_session_cmds+=("${nvim_cmd}")
+
+    main_cmd=$(printf " && %s" "${start_session_cmds[@]}")
+    main_cmd="bash -ic '${main_cmd:3}'"
+
+    tmux new-session -d \
+        -s ${selected_name} \
+        -c ${selected_root} \
+        -n 'main' "${main_cmd}"
+
+    session_customizer="${selected_root}/.tmux_customizer.sh"
+    if [[ -f ${session_customizer} ]]; then
+        bash ${session_customizer}
+    fi
+fi
+
+if [[ -z $TMUX ]]; then
+    tmux attach-session -t ${selected_name}
+else
+    tmux switch-client -t ${selected_name}
+fi

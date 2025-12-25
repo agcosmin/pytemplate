@@ -1,14 +1,12 @@
 .PHONY: setup_lint lint format test
 
-setup_lint:
-	lintrunner init
-
 lint:
-	lintrunner
+	uv run lintrunner
+	uv run ty check src
 
 format:
-	lintrunner format
+	uv run lintrunner format
 
 test:
-	pytest ./tests
+	uv run pytest ./tests
 

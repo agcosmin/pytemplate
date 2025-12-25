@@ -1,18 +1,27 @@
 {
-  "project_name": null,
   "package_name": null,
+  "project_name":  "{{ cookiecutter.package_name }}",
   "project_slug": "{{ cookiecutter.package_name }}",
-  "pypi_project_name":  "{{ cookiecutter.package_name }}",
   "description": "",
   "author": null,
   "email": null,
-  "python_version": "3.11.11",
+  "python_version": "3.11.14",
   "license": [ "MIT", "TBD" ],
-  "add_ml_deps": true,
+  "add_ml_deps": false,
   "init_repo": true,
+  "conda_env_name": "no_conda_env",
   "_copy_without_render": [
         "Makefile",
         "pylintrc"
     ],
-  "_new_lines": "\n"
+  "_new_lines": "\n",
+  "__prompts__": {
+    "package_name": "Python package name. Must follow PEP8 naming convention.",
+    "project_name": "Python project name [defaults to package_name - recommended]. Must follow PEP8 naming convention.",
+    "project_slug": "Root directory of the project [defaults to package_name - recommended]",
+    "description": "One line description of your project. Used as headline in READEME.md, project docstring and PyPI page",
+    "add_ml_deps": "Adds common ML packages as dependencies.",
+    "init_repo": "Initialize git repo and make first commit",
+    "conda_env_name": "Conda evironment name to be used by tmux sessionizer script. See READEM.md"
+  }
 }

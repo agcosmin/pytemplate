@@ -30,21 +30,35 @@ def intialize_repo() -> bool:
     if init_repo:
         try:
             subprocess.run(["git", "init"], capture_output=True, check=True)
-            subprocess.run(["git", "add", "--", "."], capture_output=True, check=True)
+            subprocess.run(
+                ["git", "add", "--", "."], capture_output=True, check=True
+            )
             subprocess.run(
                 ["git", "commit", "-m", "Intial commit, project setup"],
                 capture_output=True,
                 check=True,
             )
         except subprocess.CalledProcessError as e:
-            details = f"output:\n{e.output}\nstdout:\n{e.stdout}\nstderr:\n{e.stderr}"
-            print(f"ERROR: Failed to initialize git repository. Details:\n{details}")
+            details = (
+                f"output:\n{e.output}\nstdout:\n{e.stdout}\nstderr:\n{e.stderr}"
+            )
+            print(
+                f"ERROR: Failed to initialize git repository. Details:\n{details}"
+            )
             return False
     return True
+
+
+def create_conda_env_info() -> None:
+    conda_env_name = "{{ cookiecutter.conda_env_name }}"
+    if conda_env_name != "no_conda_env":
+        with open(".conda.env", "w") as conda_env_fp:
+            conda_env_fp.write(f"{conda_env_name}\n")
 
 
 if __name__ == "__main__":
     remove_files()
     hide_config_files()
+    create_conda_env_info()
     if not intialize_repo():
         sys.exit(1)

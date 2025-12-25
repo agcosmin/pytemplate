@@ -1,7 +1,7 @@
 [[linter]]
 code = "RUFF_FORMAT"
 include_patterns = [
-  "{{ cookiecutter.package_name }}/**/*.py",
+  "src/**/*.py",
   "tests/**/*.py",
 ]
 exclude_patterns = []
@@ -23,7 +23,7 @@ is_formatter = true
 [[linter]]
 code = "RUFF_LINT"
 include_patterns = [
-  "{{ cookiecutter.package_name }}/**/*.py",
+  "src/**/*.py",
   "tests/**/*.py",
 ]
 exclude_patterns = []
@@ -45,7 +45,7 @@ is_formatter = true
 [[linter]]
 code = "PYLINT"
 include_patterns = [
-  "{{ cookiecutter.package_name }}/**/*.py",
+  "src/**/*.py",
   "tests/**/*.py",
 ]
 exclude_patterns = []

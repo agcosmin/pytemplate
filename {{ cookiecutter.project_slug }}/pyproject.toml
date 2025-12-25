@@ -1,9 +1,9 @@
 [build-system]
-requires = ["setuptools >= 75.6"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "{{ cookiecutter.pypi_project_name }}"
+name = "{{ cookiecutter.project_name }}"
 authors = [
   { name = "{{ cookiecutter.author }}", email="{{ cookiecutter.email }}" },
 ]
@@ -12,34 +12,37 @@ readme = "README.md"
 requires-python = ">={{ cookiecutter.python_version }}"
 classifiers = [
   "Programming Language :: Python :: 3",
-  {% if cookiecutter.license == "MIT" -%}
-  "License :: OSI Approved :: MIT License",
-  {% endif -%}
   "Operating System :: OS Independent",
 ]
+
+{% if cookiecutter.license != "TBD" -%}
+license = "{{ cookiecutter.license }}"
+license-files = ["LICEN[CS]E*"]
+{% endif -%}
+
 dynamic = ["version"]
 dependencies = [
 {% if cookiecutter.add_ml_deps -%}
-"torch >= 2.6.0",
-"torchaudio >= 2.6.0",
-"torchvision >= 0.21.0",
-"torchrl >= 0.4.0",
-"pandas >= 2.2.3",
-"scikit-learn >= 1.6.0",
-"scipy >= 1.14.1",
-"notebook >= 7.1.3",
-"lightning >= 2.5.1",
-"transformers >=  4.51.3",
-"accelerate >= 1.5.2",
-"bitsandbytes >= 0.41.0",
-"tokenizers >= 0.21.1",
-"datasets >= 3.6.0",
-"tqdm >= 4.66.5",
-"tensorboard >= 2.17.1",
-"seaborn [stats] >= 0.13.2",
-"ydf >= 0.9.0",
-"jupyterlab-vim >= 4.1.4",
-"optuna >= 4.3.0",
+  "torch ~= 2.9.0",
+  "torchaudio >= 2.6.0",
+  "torchvision >= 0.21.0",
+  "torchrl >= 0.4.0",
+  "pandas >= 2.2.3",
+  "scikit-learn ~= 1.8.0",
+  "scipy >= 1.14.1",
+  "notebook >= 7.1.3",
+  "lightning >= 2.5.1",
+  "transformers >=  4.51.3",
+  "accelerate >= 1.5.2",
+  "bitsandbytes >= 0.41.0",
+  "tokenizers >= 0.21.1",
+  "datasets >= 3.6.0",
+  "tqdm >= 4.66.5",
+  "tensorboard >= 2.17.1",
+  "seaborn [stats] >= 0.13.2",
+  "ydf >= 0.9.0",
+  "jupyterlab-vim >= 4.1.4",
+  "optuna >= 4.3.0",
 {% endif -%}
 ]
 
@@ -49,22 +52,57 @@ dependencies = [
 version = {attr = "{{ cookiecutter.package_name }}.__version__"}
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = [ "{{ cookiecutter.package_name }}"]
+where = ["src"]
+include = [ "{{ cookiecutter.package_name }}" ]
 
 [project.scripts]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-  "pytest >= 8.0.0",
-  "lintrunner >= 0.12.5",
-  "lintrunner-adapters >= 0.12.3",
-  "pylint >= 3.1.0",
-  "ruff >= 0.4.3"
+  "pytest >= 9.0.2",
+  "lintrunner >= 0.12.7",
+  "lintrunner-adapters >= 0.12.6",
+  "pylint >= 4.0.4",
+  "ruff >= 0.14.10",
+  "ty >= 0.0.5",
 ]
 
 [tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
 line-length = 80
+indent-width = 4
+
+[too.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
 
 [tool.ruff.format]
 quote-style = "double"
